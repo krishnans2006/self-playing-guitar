@@ -13,6 +13,14 @@ LAYOUT = [
 
 AVAILABLE_FRETS = list(range(4))
 
+CHORDS = {
+    "G": [(0, 2), (4, 1), (5, 2)],
+    "C": [(1, 0), (3, 1), (4, 2)],
+    "D": [(0, 1), (1, 2), (2, 1)],
+    "E": [(2, 0), (3, 1), (4, 1)],
+    "A": [(1, 1), (2, 1), (3, 1)],
+}
+
 
 if __name__ == "__main__":
     for (string, fret), id_ in NOTES.items():

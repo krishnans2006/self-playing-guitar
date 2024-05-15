@@ -13,7 +13,7 @@ for f in frets:
 
 @app.route("/")
 def index():
-    return render_template("index.html", layout=config.LAYOUT, available_frets=config.AVAILABLE_FRETS)
+    return render_template("index.html", layout=config.LAYOUT, available_frets=config.AVAILABLE_FRETS, chords=config.CHORDS)
 
 
 @app.route("/state")
@@ -25,6 +25,20 @@ def state():
 def play(string: int, fret: int, time: int):
     pin: Pin = frets[config.NOTES[string, fret]]
     pin.blink(on_time=time, off_time=0, n=1, background=True)
+    return {"result": True}
+
+
+@app.route("/play-chord/<chord>/<int:time>")
+def play_chord(chord: str, time: int):
+    if chord == "all":
+        for pin in frets:
+            pin.blink(on_time=time, off_time=0, n=1, background=True)
+    elif chord not in config.CHORDS:
+        return {"result": False}
+    else:
+        for string, fret in config.CHORDS[chord]:
+            pin: Pin = frets[config.NOTES[string, fret]]
+            pin.blink(on_time=time, off_time=0, n=1, background=True)
     return {"result": True}
 
 

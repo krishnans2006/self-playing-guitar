@@ -25,12 +25,16 @@
           opacity: 1;
           background-color: white;
       }
+
+      /* https://stackoverflow.com/a/67560773/11317931 */
+      #time {
+          flex: 0 1 60px;
+      }
   </style>
 </head>
 <body>
 
 <h1 class="text-center mt-4 mb-5">Self-Playing Guitar</h1>
-
 <div class="container text-center">
   <div id="guitar">
     {% for string in layout %}
@@ -45,7 +49,7 @@
 
           {% if loop.index0 in available_frets %}
           <button type="button" class="note-btn btn btn-outline-primary col-12 mx-auto"
-                  onclick="play('{{ string_loop.index0 }}', '{{ loop.index0 }}')">{{ note }}
+                  onclick="play('{{ string_loop.index0 }}', '{{ loop.index0 }}');">{{ note }}
           </button>
           {% else %}
           <button type="button" class="note-btn btn btn-outline-secondary col-12 mx-auto" disabled>
@@ -59,8 +63,17 @@
     {% endfor %}
   </div>
   <div class="input-group mb-3">
-    <label class="input-group-text" for="time">Time (s)</label>
-    <input type="number" id="time" class="form-control" value="1">
+    <span class="input-group-text">Play a chord:</span>
+    {% for chord in chords %}
+    <button class="btn btn-outline-primary" type="button" onclick="playChord('{{ chord }}');">{{
+      chord }}
+    </button>
+    {% endfor %}
+    <button class="btn btn-outline-primary" type="button" onclick="playChord('all');">All Notes
+    </button>
+    <label class="input-group-text" for="time">for</label>
+    <input type="number" id="time" class="form-control col-4" value="1">
+    <label id="time-text" class="input-group-text" for="time">second</label>
   </div>
 </div>
 
@@ -75,6 +88,11 @@
             .then(response => console.log(response));
     }
 
+    function playChord(chord) {
+        const time = document.getElementById("time").value;
+        fetch("/play-chord/" + chord + "/" + time);
+    }
+
     window.setInterval(() => {
         fetch("/state")
             .then(response => response.json())
@@ -84,7 +102,6 @@
                     for (let fret = 0; fret < data[string].length; fret++) {
                         const note = document.getElementById("note-" + string + "-" + fret).querySelector(".note-btn");
                         if (data[string][fret] === 1) {
-                            console.log("note-" + string + "-" + fret)
                             note.classList.add("btn-success");
                             note.classList.remove("btn-outline-primary");
                         } else {
@@ -95,6 +112,12 @@
                 }
             });
     }, 10);
+
+    document.getElementById("time").addEventListener("input", () => {
+        const time = document.getElementById("time").value;
+        const timeText = document.getElementById("time-text");
+        timeText.innerText = time === "1" ? "second" : "seconds";
+    });
 </script>
 </body>
 </html>
