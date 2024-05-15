@@ -1,7 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template
 from config import NOTES, GPIO
 from gpiozero import DigitalOutputDevice as Pin
-import time
 
 app = Flask(__name__)
 
@@ -15,6 +14,11 @@ for f in frets:
 @app.route("/")
 def index():
     return "Self-Playing Guitar"
+
+
+@app.route("/state")
+def state():
+    return {"state": [[frets[NOTES[string, fret]].value for fret in range(4)] for string in range(6)]}
 
 
 @app.route("/play/<int:string>/<int:fret>/<int:time>")
