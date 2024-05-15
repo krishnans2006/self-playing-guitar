@@ -33,6 +33,9 @@ def play_chord(chord: str, time: int):
     if chord == "all":
         for pin in frets:
             pin.blink(on_time=time, off_time=0, n=1, background=True)
+    elif chord == "none":
+        for pin in frets:
+            pin.off()
     elif chord not in config.CHORDS:
         return {"result": False}
     else:
