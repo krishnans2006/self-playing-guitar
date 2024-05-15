@@ -1,12 +1,15 @@
 from flask import Flask, request, redirect, url_for, render_template
 from config import NOTES, GPIO
-from gpiozero import DigitalOutputDevice as DOD
+from gpiozero import DigitalOutputDevice as Pin
 import time
 
 app = Flask(__name__)
 
+# Setup pins
+frets: list[Pin] = [Pin(GPIO[id_]) for id_ in range(24)]
 
-frets = [None] * 24
+for f in frets:
+    f.off()
 
 
 @app.route("/")
@@ -14,21 +17,10 @@ def index():
     return "Self-Playing Guitar"
 
 
-@app.route("/initialize")
-def initialize():
-    for (string, fret), id_ in NOTES.items():
-        pin_obj = DOD(GPIO[id_])
-        pin_obj.off()
-        frets[id_] = pin_obj
-    return {"result": True}
-
-
 @app.route("/play/<int:string>/<int:fret>/<int:time>")
 def play(string: int, fret: int, time: int):
-    pin_obj = frets[NOTES[string, fret]]
-    if not pin_obj:
-        return {"result": False}
-    pin_obj.blink(on_time=time, off_time=0, n=1, background=True)
+    pin: Pin = frets[NOTES[string, fret]]
+    pin.blink(on_time=time, off_time=0, n=1, background=True)
     return {"result": True}
 
 
