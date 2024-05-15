@@ -62,7 +62,7 @@
     </div>
     {% endfor %}
   </div>
-  <div class="input-group mb-3">
+  <div class="input-group mb-3 d-flex justify-content-center">
     <span class="input-group-text">Play a chord:</span>
     {% for chord in chords %}
     <button class="btn btn-outline-primary" type="button" onclick="playChord('{{ chord }}');">{{
@@ -71,7 +71,7 @@
     {% endfor %}
     <button class="btn btn-outline-primary" type="button" onclick="playChord('all');">All Notes</button>
     <button class="btn btn-outline-primary" type="button" onclick="playChord('none');">No Notes</button>
-    <label class="input-group-text" for="time">&emsp;&emsp;&emsp;for</label>
+    <label class="input-group-text" for="time">for</label>
     <input type="number" id="time" class="form-control col-4" value="1">
     <label id="time-text" class="input-group-text" for="time">second</label>
   </div>
